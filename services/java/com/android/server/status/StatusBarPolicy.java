@@ -425,7 +425,7 @@ public class StatusBarPolicy {
                 new com.android.server.status.StorageNotification(context));
 
         // battery
-        mBatteryData = IconData.makeIcon("battery",
+        mBatteryData = IconData.makeIconNumber("battery",
                 null, com.android.internal.R.drawable.stat_sys_battery_unknown, 0, 0);
         mBatteryIcon = service.addIcon(mBatteryData, null);
 
@@ -648,7 +648,6 @@ public class StatusBarPolicy {
     private final void updateBattery(Intent intent) {
         mBatteryData.iconId = intent.getIntExtra("icon-small", 0);
         mBatteryData.iconLevel = intent.getIntExtra("level", 0);
-        mService.updateIcon(mBatteryIcon, mBatteryData, null);
 
         boolean plugged = intent.getIntExtra("plugged", 0) != 0;
         int level = intent.getIntExtra("level", -1);
@@ -659,6 +658,9 @@ public class StatusBarPolicy {
                     + " mBatteryLevel=" + mBatteryLevel
                     + " mBatteryFirst=" + mBatteryFirst);
         }
+
+        mBatteryData.number = (plugged || level >= 100) ? -1 : level;
+        mService.updateIcon(mBatteryIcon, mBatteryData, null);
 
         boolean oldPlugged = mBatteryPlugged;
 

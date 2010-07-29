@@ -20,14 +20,18 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Slog;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -44,6 +48,8 @@ class StatusBarIcon {
     private TextView mTextView;
     private AnimatedImageView mImageView;
     private TextView mNumberView;
+
+    private int mBatteryColor = 0xffffffff;
 
     public StatusBarIcon(Context context, IconData data, ViewGroup parent) {
         mData = data.clone();
@@ -91,6 +97,59 @@ class StatusBarIcon {
                 }
                 break;
             }
+
+            case IconData.ICON_NUMBER: {
+                // container
+                LayoutInflater inflater = (LayoutInflater)context.getSystemService(
+                                                Context.LAYOUT_INFLATER_SERVICE);
+                View v = inflater.inflate(com.android.internal.R.layout.status_bar_icon, parent, false);
+                this.view = v;
+
+                // icon
+                AnimatedImageView im = (AnimatedImageView)v.findViewById(com.android.internal.R.id.image);
+                im.setImageDrawable(getIcon(context, data));
+                im.setImageLevel(data.iconLevel);
+                mImageView = im;
+
+                // number
+                TextView nv = (TextView)v.findViewById(com.android.internal.R.id.number);
+                mNumberView = nv;
+
+                // the following is borrowed heavily from cyanogenmod
+                DisplayMetrics dm = new DisplayMetrics();
+		WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+                wm.getDefaultDisplay().getMetrics(dm);
+
+		if (dm.densityDpi == DisplayMetrics.DENSITY_HIGH) {
+                    mNumberView.setLayoutParams(
+                        new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+
+                    mNumberView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+                } else {
+                    mNumberView.setLayoutParams(
+                        new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            Gravity.CENTER | Gravity.CENTER_VERTICAL));
+
+                    mNumberView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
+                }
+
+                mNumberView.setBackgroundDrawable(null);
+                mNumberView.setTextColor(mBatteryColor);
+                mNumberView.setTextSize(12);
+                mNumberView.setVisibility(View.VISIBLE);
+
+                if ((data.number > 0)&&(data.number < 100)) {
+                    nv.setText("" + data.number);
+                } else {
+                    nv.setText("");
+                }
+                break;
+            }
         }
     }
 
@@ -106,6 +165,7 @@ class StatusBarIcon {
             }
             break;
         case IconData.ICON:
+        case IconData.ICON_NUMBER:
             if (((mData.iconPackage != null && data.iconPackage != null)
                         && !mData.iconPackage.equals(data.iconPackage))
                     || mData.iconId != data.iconId
