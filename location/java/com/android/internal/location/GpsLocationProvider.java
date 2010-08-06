@@ -522,7 +522,7 @@ public class GpsLocationProvider implements LocationProviderInterface {
     }
 
     private void handleDownloadXtraData() {
-     if (!mNetworkAvailable) {
+        if (!mNetworkAvailable) {
             // try again when network is up
             mDownloadXtraDataPending = true;
             return;
