@@ -72,4 +72,5 @@
 
     <!-- Default for Settings.System.VIBRATE_IN_SILENT -->
     <bool name="def_vibrate_in_silent">true</bool>
+    <integer name="def_clock_color">0xff000000</integer>
 </resources>
