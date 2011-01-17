@@ -1348,8 +1348,16 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         RILRequest rr
                 = RILRequest.obtain(RIL_REQUEST_RADIO_POWER, result);
 
-        rr.mp.writeInt(1);
-        rr.mp.writeInt(on ? 1 : 0);
+        //samsung crap for airplane mode
+        if (on)
+ 	{
+ 	        rr.mp.writeInt(1);
+ 	        rr.mp.writeInt(1);
+ 	} else {
+ 	        rr.mp.writeInt(2);
+	        rr.mp.writeInt(0);
+ 		rr.mp.writeInt(0);
+ 	}
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "> " + requestToString(rr.mRequest));
 
@@ -2334,6 +2342,16 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_OEM_HOOK_RAW: ret = responseRaw(p); break;
             case RIL_UNSOL_RINGBACK_TONE: ret = responseInts(p); break;
             case RIL_UNSOL_RESEND_INCALL_MUTE: ret = responseVoid(p); break;
+            case RIL_UNSOL_HSDPA_STATE_CHANGED: ret = responseVoid(p); break;
+            
+            //fixing anoying Exceptions caused by the new Samsung states
+            //FIXME figure out what the states mean an what data is in the parcel
+
+            case RIL_UNSOL_O2_HOME_ZONE_INFO: ret = responseVoid(p); break;
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST: ret = responseVoid(p); break;
+            case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseVoid(p); break;
+            case RIL_UNSOL_DEVICE_READY_NOTI: ret = responseVoid(p); break;
+            case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST_2: ret = responseVoid(p); break;
 
             default:
                 throw new RuntimeException("Unrecognized unsol response: " + response);
@@ -2355,6 +2373,12 @@ public final class RIL extends BaseCommands implements CommandsInterface {
                 if (RILJ_LOGD) unsljLog(response);
 
                 mCallStateRegistrants
+                    .notifyRegistrants(new AsyncResult(null, null, null));
+            break;
+            case RIL_UNSOL_HSDPA_STATE_CHANGED:
+                if (RILJ_LOGD) unsljLog(response);
+
+                mNetworkStateRegistrants
                     .notifyRegistrants(new AsyncResult(null, null, null));
             break;
             case RIL_UNSOL_RESPONSE_NETWORK_STATE_CHANGED:
@@ -2815,6 +2839,44 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         ArrayList<DriverCall> response;
         DriverCall dc;
 
+  int dataAvail = p.dataAvail();
+  int pos = p.dataPosition();
+  int size = p.dataSize();
+  Log.d(LOG_TAG, "Parcel size = " + size);
+  Log.d(LOG_TAG, "Parcel pos = " + pos);
+  Log.d(LOG_TAG, "Parcel dataAvail = " + dataAvail);
+/*
+//Samsung fucked up here
+// Native package assembly in the aosp rild
+
+p.writeInt32(p_cur->state);
+        p.writeInt32(p_cur->index);
+        p.writeInt32(p_cur->toa);
+        p.writeInt32(p_cur->isMpty);
+        p.writeInt32(p_cur->isMT);
+        p.writeInt32(p_cur->als);
+        p.writeInt32(p_cur->isVoice);
+        p.writeInt32(p_cur->isVoicePrivacy);
+        writeStringToParcel(p, p_cur->number);
+        p.writeInt32(p_cur->numberPresentation);
+        writeStringToParcel(p, p_cur->name);
+        p.writeInt32(p_cur->namePresentation);
+*/
+
+/*
+        Remove when partners upgrade to version 3
+        if ((s_callbacks.version < 3) || (p_cur->uusInfo == NULL || p_cur->uusInfo->uusData == NULL)) {
+            p.writeInt32(0);  UUS Information is absent 
+        } else {
+            RIL_UUS_Info *uusInfo = p_cur->uusInfo;
+            p.writeInt32(1);  UUS Information is present 
+            p.writeInt32(uusInfo->uusType);
+            p.writeInt3s2(uusInfo->uusDcs);
+            p.writeInt32(uusInfo->uusLength);
+            p.write(uusInfo->uusData, uusInfo->uusLength);
+        }
+*/
+
         num = p.readInt();
         response = new ArrayList<DriverCall>(num);
 
@@ -2830,6 +2892,7 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             voiceSettings = p.readInt();
             dc.isVoice = (0 == voiceSettings) ? false : true;
             dc.isVoicePrivacy = (0 != p.readInt());
+            voiceSettings = p.readInt(); //Some Samsung magic data for Videocalls
             dc.number = p.readString();
             int np = p.readInt();
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
@@ -3023,6 +3086,17 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         for (int i = 0 ; i < numInts ; i++) {
             response[i] = p.readInt();
         }
+
+	/* Matching Samsung signal strength to asu.
+	BER is not used by Samsung at all, they just set it to -1.
+	I have no clue how cdma or evdo are handled, so lets only fix gsm for now.*/
+	if (response[6] == 1)
+	{
+		response[0] = (response[0] & 0xFF00) / 85;
+		for (int i = 1 ; i < (numInts - 1) ; i++) {
+			response[i] = -1;
+		}
+	}
 
         return response;
     }

@@ -27,6 +27,7 @@ static struct {
     unsigned uid;
     const char *name;
 } allowed[] = {
+    { AID_COMPASS, "yamaha.hardware.sensors" },
 #ifdef LVMX
     { AID_MEDIA, "com.lifevibes.mx.ipc" },
 #endif
