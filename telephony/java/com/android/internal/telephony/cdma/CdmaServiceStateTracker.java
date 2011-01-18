@@ -1084,15 +1084,15 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             if (operatorNumeric == null) {
                 phone.setSystemProperty(TelephonyProperties.PROPERTY_OPERATOR_ISO_COUNTRY, "");
             } else {
-                String isoCountryCode = "";
-                try{
+                String isoCountryCode = "US";
+                /*try{
                     isoCountryCode = MccTable.countryCodeForMcc(Integer.parseInt(
                             operatorNumeric.substring(0,3)));
                 } catch ( NumberFormatException ex){
                     Log.w(LOG_TAG, "countryCodeForMcc error" + ex);
                 } catch ( StringIndexOutOfBoundsException ex) {
                     Log.w(LOG_TAG, "countryCodeForMcc error" + ex);
-                }
+                }*/
 
                 phone.setSystemProperty(TelephonyProperties.PROPERTY_OPERATOR_ISO_COUNTRY,
                         isoCountryCode);
