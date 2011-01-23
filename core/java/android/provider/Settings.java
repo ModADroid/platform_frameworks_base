@@ -1649,6 +1649,12 @@ public final class Settings {
         public static final String MENU_UNLOCK_SCREEN = "menu_unlock_screen";
 
         /**
+         * Whether launcher should use sensor orientation. The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String LAUNCHER_ORIENTATION = "launcher_orientation";
+
+        /**
          * URI for the low battery sound file.
          * @hide
          */
