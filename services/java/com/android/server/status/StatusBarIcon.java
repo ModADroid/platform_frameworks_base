@@ -53,6 +53,7 @@ class StatusBarIcon {
     private TextView mNumberView;
 
     private int mBatteryColor = 0xffffffff;
+    private int mClockColor = 0xff000000;
 
     public StatusBarIcon(Context context, IconData data, ViewGroup parent) {
         mData = data.clone();
