@@ -1540,10 +1540,10 @@ public final class Settings {
         public static final String DTMF_TONE_WHEN_DIALING = "dtmf_tone";
 
         /**
-         * should we use rotary or tab lockscreen?
+         * clock color values
          * @hide
          */
-        public static final String USE_ROTARY_LOCKSCREEN = "use_rotary_lockscreen";
+        public static final String CLOCK_COLOR = "clock_color";
 
         /**
          * CDMA only settings

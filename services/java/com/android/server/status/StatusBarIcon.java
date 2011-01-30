@@ -35,6 +35,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import android.provider.Settings;
+import static android.provider.Settings.System.CLOCK_COLOR;
+
 class StatusBarIcon {
     // TODO: get this from a resource
     private static final int ICON_GAP = 8;
@@ -63,7 +66,11 @@ class StatusBarIcon {
                         LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 t.setTextSize(16);
-                t.setTextColor(0xff000000);
+                t.setTextColor(
+                        Settings.System.getInt(
+                            context.getContentResolver(),
+                            Settings.System.CLOCK_COLOR, mClockColor)
+                );
                 t.setTypeface(Typeface.DEFAULT_BOLD);
                 t.setGravity(Gravity.CENTER_VERTICAL | Gravity.LEFT);
                 t.setPadding(6, 0, 0, 0);
