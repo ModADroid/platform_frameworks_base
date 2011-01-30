@@ -169,7 +169,7 @@
 
     <!-- music controls -->
     <ImageButton
-        android:id="@+id/mediaPlayButton"
+        android:id="@+id/musicControlPlay"
         android:src="@drawable/ic_media_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
         android:visibility="gone"
         />
     <ImageButton
-        android:id="@+id/mediaPauseButton"
+        android:id="@+id/musicControlPause"
         android:src="@drawable/ic_media_pause"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
         android:visibility="gone"
         />
     <ImageButton
-        android:id="@+id/mediaPreviousButton"
+        android:id="@+id/musicControlPrevious"
         android:src="@drawable/ic_media_previous"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -205,7 +205,7 @@
         android:visibility="gone"
         />
     <ImageButton
-        android:id="@+id/mediaNextButton"
+        android:id="@+id/musicControlNext"
         android:src="@drawable/ic_media_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
