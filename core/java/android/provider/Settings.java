@@ -1545,6 +1545,12 @@ public final class Settings {
          */
         public static final String CLOCK_COLOR = "clock_color";
 
+        /*
+         * battery percentage color values
+         * @hide
+         */
+        public static final String BATTERY_COLOR = "battery_color";
+
         /**
          * CDMA only settings
          * DTMF tone type played by the dialer when dialing.

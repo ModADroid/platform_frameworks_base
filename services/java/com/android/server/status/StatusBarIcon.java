@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import android.provider.Settings;
 import static android.provider.Settings.System.CLOCK_COLOR;
+import static android.provider.Settings.System.BATTERY_COLOR;
 
 class StatusBarIcon {
     // TODO: get this from a resource
@@ -147,7 +148,11 @@ class StatusBarIcon {
                 }
 
                 mNumberView.setBackgroundDrawable(null);
-                mNumberView.setTextColor(mBatteryColor);
+                mNumberView.setTextColor(
+                        Settings.System.getInt(
+                            context.getContentResolver(),
+                            Settings.System.BATTERY_COLOR, mBatteryColor)
+                );
                 mNumberView.setTextSize(12);
                 mNumberView.setVisibility(View.VISIBLE);
 
