@@ -37,7 +37,9 @@ import android.widget.TextView;
 
 import android.provider.Settings;
 import static android.provider.Settings.System.CLOCK_COLOR;
+import static android.provider.Settings.System.BATTERY_PERCENTAGE;
 import static android.provider.Settings.System.BATTERY_COLOR;
+import static android.provider.Settings.System.BATTERY_FONT_SIZE;
 
 class StatusBarIcon {
     // TODO: get this from a resource
@@ -53,6 +55,7 @@ class StatusBarIcon {
     private AnimatedImageView mImageView;
     private TextView mNumberView;
 
+    private int mBatteryFontSize = 12;
     private int mBatteryColor = 0xffffffff;
     private int mClockColor = 0xff000000;
 
@@ -153,8 +156,16 @@ class StatusBarIcon {
                             context.getContentResolver(),
                             Settings.System.BATTERY_COLOR, mBatteryColor)
                 );
-                mNumberView.setTextSize(12);
-                mNumberView.setVisibility(View.VISIBLE);
+                mNumberView.setTextSize(
+                        Settings.System.getInt(
+                            context.getContentResolver(),
+                            Settings.System.BATTERY_FONT_SIZE, mBatteryFontSize)
+                );
+                mNumberView.setVisibility(
+                        Settings.System.getInt(
+                            context.getContentResolver(),
+                            Settings.System.BATTERY_PERCENTAGE, 1) == 1 ? View.VISIBLE : View.GONE
+                );
 
                 if ((data.number > 0)&&(data.number < 100)) {
                     nv.setText("" + data.number);

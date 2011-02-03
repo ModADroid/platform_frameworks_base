@@ -1546,10 +1546,23 @@ public final class Settings {
         public static final String CLOCK_COLOR = "clock_color";
 
         /*
+         * whether to show battery percentage
+         * boolean (1 or 0).
+         * @hide
+         */
+        public static final String BATTERY_PERCENTAGE = "battery_percentage";
+
+        /*
          * battery percentage color values
          * @hide
          */
         public static final String BATTERY_COLOR = "battery_color";
+
+        /*
+         * battery percentage font size values
+         * @hide
+         */
+        public static final String BATTERY_FONT_SIZE = "battery_font_size";
 
         /**
          * CDMA only settings
