@@ -132,23 +132,13 @@ class StatusBarIcon {
 		WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
                 wm.getDefaultDisplay().getMetrics(dm);
 
-		if (dm.densityDpi == DisplayMetrics.DENSITY_HIGH) {
-                    mNumberView.setLayoutParams(
-                        new FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+                mNumberView.setLayoutParams(
+                    new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        Gravity.RIGHT | Gravity.CENTER_VERTICAL));
 
-                    mNumberView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-                } else {
-                    mNumberView.setLayoutParams(
-                        new FrameLayout.LayoutParams(
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            FrameLayout.LayoutParams.WRAP_CONTENT,
-                            Gravity.CENTER | Gravity.CENTER_VERTICAL));
-
-                    mNumberView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
-                }
+                mNumberView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 
                 mNumberView.setBackgroundDrawable(null);
                 mNumberView.setTextColor(
