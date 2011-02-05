@@ -61,11 +61,11 @@ static jlong tryBoth(char const* a, char const* b) {
     return num >= 0 ? num : readNumber(b);
 }
 
-// Returns the sum of numbers from the specified path under /sys/class/net/*,
+// Returns the sum of numbers from the specified path under /sys/devices/virtual/net/*,
 // -1 if no such file exists.
 static jlong readTotal(char const* suffix) {
 #ifdef HAVE_ANDROID_OS
-    char filename[PATH_MAX] = "/sys/class/net/";
+    char filename[PATH_MAX] = "/sys/devices/virtual/net/";
     DIR *dir = opendir(filename);
     if (dir == NULL) {
         LOGE("Can't list %s: %s", filename, strerror(errno));
@@ -97,26 +97,26 @@ static jlong readTotal(char const* suffix) {
 
 static jlong getMobileTxPackets(JNIEnv* env, jobject clazz) {
     return tryBoth(
-            "/sys/class/net/rmnet0/statistics/tx_packets",
-            "/sys/class/net/ppp0/statistics/tx_packets");
+            "/sys/devices/virtual/net/rmnet0/statistics/tx_packets",
+            "/sys/devices/virtual/net/ppp0/statistics/tx_packets");
 }
 
 static jlong getMobileRxPackets(JNIEnv* env, jobject clazz) {
     return tryBoth(
-            "/sys/class/net/rmnet0/statistics/rx_packets",
-            "/sys/class/net/ppp0/statistics/rx_packets");
+            "/sys/devices/virtual/net/rmnet0/statistics/rx_packets",
+            "/sys/devices/virtual/net/ppp0/statistics/rx_packets");
 }
 
 static jlong getMobileTxBytes(JNIEnv* env, jobject clazz) {
     return tryBoth(
-            "/sys/class/net/rmnet0/statistics/tx_bytes",
-            "/sys/class/net/ppp0/statistics/tx_bytes");
+            "/sys/devices/virtual/net/rmnet0/statistics/tx_bytes",
+            "/sys/devices/virtual/net/ppp0/statistics/tx_bytes");
 }
 
 static jlong getMobileRxBytes(JNIEnv* env, jobject clazz) {
     return tryBoth(
-            "/sys/class/net/rmnet0/statistics/rx_bytes",
-            "/sys/class/net/ppp0/statistics/rx_bytes");
+            "/sys/devices/virtual/net/rmnet0/statistics/rx_bytes",
+            "/sys/devices/virtual/net/ppp0/statistics/rx_bytes");
 }
 
 // Total stats are read less often, so we're willing to put up
