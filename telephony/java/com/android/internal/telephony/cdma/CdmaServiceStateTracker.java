@@ -1203,6 +1203,10 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             setSignalStrengthDefaultValues();
         } else {
             int[] ints = (int[])ar.result;
+
+            log(String.format("SignalStrength ints:	%d	%d	%d	%d	%d	%d	%d",
+                ints[0], ints[1], ints[2], ints[3], ints[4], ints[5], ints[6]));
+
             int offset = 2;
             int cdmaDbm = (ints[offset] > 0) ? -ints[offset] : -120;
             int cdmaEcio = (ints[offset+1] > 0) ? -ints[offset+1] : -160;
