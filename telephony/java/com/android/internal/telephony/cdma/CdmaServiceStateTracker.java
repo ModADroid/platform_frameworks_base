@@ -1207,12 +1207,16 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             log(String.format("SignalStrength ints:	%d	%d	%d	%d	%d	%d	%d",
                 ints[0], ints[1], ints[2], ints[3], ints[4], ints[5], ints[6]));
 
-            int offset = 2;
+            int offset = 0;
             int cdmaDbm = (ints[offset] > 0) ? -ints[offset] : -120;
-            int cdmaEcio = (ints[offset+1] > 0) ? -ints[offset+1] : -160;
-            int evdoRssi = (ints[offset+2] > 0) ? -ints[offset+2] : -120;
-            int evdoEcio = (ints[offset+3] > 0) ? -ints[offset+3] : -1;
-            int evdoSnr  = ((ints[offset+4] > 0) && (ints[offset+4] <= 8)) ? ints[offset+4] : -1;
+            int cdmaEcio = (ints[offset+2] > 0) ? -ints[offset+2] : -160;
+            //int evdoRssi = (ints[offset+3] > 0) ? -ints[offset+3] : -120;
+            int evdoRssi = cdmaDbm;
+            int evdoEcio = (ints[offset+4] > 0) ? -ints[offset+4] : -1;
+            //int evdoSnr  = ((ints[offset+4] > 0) && (ints[offset+4] <= 8)) ? ints[offset+4] : -1;
+            int evdoSnr = cdmaDbm/15;
+            if(evdoSnr < 0)
+                evdoSnr = -evdoSnr;
 
             //log(String.format("onSignalStrengthResult cdmaDbm=%d cdmaEcio=%d evdoRssi=%d evdoEcio=%d evdoSnr=%d",
             //        cdmaDbm, cdmaEcio, evdoRssi, evdoEcio, evdoSnr));
