@@ -912,6 +912,7 @@ public final class BearerData {
         bData.userData.numFields = inStream.read(8);
         consumedBits += 8;
         int dataBits = paramBits - consumedBits;
+        Log.d(LOG_TAG, "dataBits = " + dataBits + " | paramBits = " + paramBits + " | consumedBits = " + consumedBits);
         bData.userData.payload = inStream.readByteArray(dataBits);
         return true;
     }
