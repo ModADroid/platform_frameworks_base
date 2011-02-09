@@ -1545,6 +1545,13 @@ public final class Settings {
          */
         public static final String CLOCK_COLOR = "clock_color";
 
+        /**
+         * whether to display clock in status bar
+         * boolean (1 or 0).
+         * @hide
+         */
+        public static final String DISPLAY_CLOCK = "display_clock";
+
         /*
          * whether to show battery percentage
          * boolean (1 or 0).

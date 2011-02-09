@@ -81,6 +81,11 @@ class StatusBarIcon {
                 t.setPadding(6, 0, 0, 0);
                 t.setLayoutParams(layoutParams);
                 t.setText(data.text);
+                t.setVisibility(
+                    Settings.System.getInt(
+                        context.getContentResolver(),
+                        Settings.System.DISPLAY_CLOCK, 1) == 1 ? View.VISIBLE : View.GONE
+                    );
                 this.view = t;
                 break;
             }
