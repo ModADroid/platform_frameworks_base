@@ -872,17 +872,18 @@ public final class BearerData {
         final int EXPECTED_PARAM_SIZE = 3 * 8;
         boolean decodeSuccess = false;
         int paramBits = inStream.read(8) * 8;
-        paramBits += 8;
+        //paramBits += 8;
         Log.d(LOG_TAG, "Inside decodeMessageId");
         Log.d(LOG_TAG, "paramBits = " + paramBits);
         if (paramBits >= EXPECTED_PARAM_SIZE) {
             paramBits -= EXPECTED_PARAM_SIZE;
             decodeSuccess = true;
             bData.messageType = inStream.read(4);
+            inStream.skip(4);
             bData.messageId = inStream.read(8) << 8;
             bData.messageId |= inStream.read(8);
-            bData.hasUserDataHeader = (inStream.read(1) == 1);
-            inStream.skip(3);
+            bData.hasUserDataHeader = (inStream.read(8) == 1);
+            //inStream.skip(3);
         }
         //if ((! decodeSuccess) || (paramBits > 0)) {
             Log.d(LOG_TAG, "MESSAGE_IDENTIFIER decode " +
@@ -901,6 +902,7 @@ public final class BearerData {
         Log.d(LOG_TAG, "paramBits = " + paramBits);
         bData.userData = new UserData();
         bData.userData.msgEncoding = inStream.read(5);
+        Log.d(LOG_TAG, "msgEncoding = " + bData.userData.msgEncoding);
         bData.userData.msgEncodingSet = true;
         bData.userData.msgType = 0;
         int consumedBits = 5;
@@ -910,10 +912,13 @@ public final class BearerData {
             consumedBits += 8;
         }
         bData.userData.numFields = inStream.read(8);
+        Log.d(LOG_TAG, "numFields = " + bData.userData.numFields);
         consumedBits += 8;
         int dataBits = paramBits - consumedBits;
         Log.d(LOG_TAG, "dataBits = " + dataBits + " | paramBits = " + paramBits + " | consumedBits = " + consumedBits);
+        //dataBits -= 8;
         bData.userData.payload = inStream.readByteArray(dataBits);
+        //inStream.skip(8);
         return true;
     }
 
@@ -1547,6 +1552,7 @@ public final class BearerData {
             BearerData bData = new BearerData();
             int foundSubparamMask = 0;
             while (inStream.available() > 0) {
+                Log.d(LOG_TAG, "inStream.available = " + inStream.available());
                 boolean decodeSuccess = false;
                 int subparamId = inStream.read(8);
                 Log.d(LOG_TAG, "subparamId = " + subparamId);
