@@ -1197,19 +1197,41 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
     private void
     onSignalStrengthResult(AsyncResult ar) {
         SignalStrength oldSignalStrength = mSignalStrength;
-
+        log("Inside onSignalStrengthResult");
         if (ar.exception != null) {
             // Most likely radio is resetting/disconnected change to default values.
             setSignalStrengthDefaultValues();
         } else {
+            while (true)
+            {
+            if (!mSignalStrength.equals(oldSignalStrength));
+            {
             int[] ints = (int[])ar.result;
 
             int offset = 2;
             int cdmaDbm = (ints[offset] > 0) ? -ints[offset] : -120;
             int cdmaEcio = (ints[offset+1] > 0) ? -ints[offset+1] : -160;
-            int evdoRssi = (ints[offset+2] > 0) ? -ints[offset+2] : -120;
-            int evdoEcio = (ints[offset+3] > 0) ? -ints[offset+3] : -1;
-            int evdoSnr  = ((ints[offset+4] > 0) && (ints[offset+4] <= 8)) ? ints[offset+4] : -1;
+
+            /**********/
+            int evdoRssi = -1;
+            int evdoEcio = -1;
+            int evdoSnr = -1;
+            if ((networkType == 7) || (networkType == 8))
+            {
+                log("CDMA network detected");
+                evdoRssi = (ints[offset+2] > 0) ? -ints[offset+2] : -120;
+                evdoEcio = (ints[offset+3] > 0) ? -ints[offset+3] : -1;
+                evdoSnr  = ((ints[offset+4] > 0) && (ints[offset+4] <= 8)) ? ints[offset+4] : -1;
+            }
+            //if (ints[offset-1] == 1)
+            //{
+                log("Polling signalstrengh");
+                pollingContext[0]++;
+                // RIL_REQUEST_REGISTRATION_STATE is necessary for CDMA
+                cm.getRegistrationState(
+                    obtainMessage(EVENT_POLL_STATE_REGISTRATION_CDMA, pollingContext));
+            //}
+            /**********/
 
             //log(String.format("onSignalStrengthResult cdmaDbm=%d cdmaEcio=%d evdoRssi=%d evdoEcio=%d evdoSnr=%d",
             //        cdmaDbm, cdmaEcio, evdoRssi, evdoEcio, evdoSnr));
@@ -1222,6 +1244,9 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
         } catch (NullPointerException ex) {
             log("onSignalStrengthResult() Phone already destroyed: " + ex
                     + "SignalStrength not notified");
+        }
+        break;
+        }
         }
     }
 
