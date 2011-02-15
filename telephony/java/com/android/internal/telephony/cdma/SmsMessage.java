@@ -544,11 +544,11 @@ public class SmsMessage extends SmsMessageBase {
             return;
         }
         mBearerData = BearerData.decode(mEnvelope.bearerData);
-        //if (Log.isLoggable(LOGGABLE_TAG, Log.VERBOSE)) {
+        if (Log.isLoggable(LOGGABLE_TAG, Log.VERBOSE)) {
             Log.d(LOG_TAG, "MT raw BearerData = '" +
                       HexDump.toHexString(mEnvelope.bearerData) + "'");
             Log.d(LOG_TAG, "MT (decoded) BearerData = " + mBearerData);
-        //}
+        }
         messageRef = mBearerData.messageId;
         if (mBearerData.userData != null) {
             userData = mBearerData.userData.payload;

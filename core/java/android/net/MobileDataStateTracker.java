@@ -217,14 +217,6 @@ public class MobileDataStateTracker extends NetworkStateTracker {
 				String prefix = "net." + mInterfaceName + ".";
 				mDefaultGatewayAddr = getIpFromString(SystemProperties.get(prefix + "gw"));
 
-                                if (mInterfaceName == null) {
-                                    Log.d(TAG, "CONNECTED event did not supply interface name.");
-                                }
-
-				if (mDefaultGatewayAddr == -1) {
-                                    Log.w(TAG, "CONNECTED event did not supply Gateway.");
-                                }
-
                                 setDetailedState(DetailedState.CONNECTED, reason, apnName);
                                 break;
                         }

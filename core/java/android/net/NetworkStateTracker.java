@@ -162,8 +162,6 @@ public abstract class NetworkStateTracker extends Handler {
             NetworkUtils.setDefaultRoute(mInterfaceName, mDefaultGatewayAddr);
             mDefaultRouteSet = true;
         }
-	if((mInterfaceName == null)) Log.e(TAG, "No Interface");
-	if((mDefaultGatewayAddr == 0)) Log.e(TAG, "No Gateway");
     }
 
     public void removeDefaultRoute() {

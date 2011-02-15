@@ -872,9 +872,6 @@ public final class BearerData {
         final int EXPECTED_PARAM_SIZE = 3 * 8;
         boolean decodeSuccess = false;
         int paramBits = inStream.read(8) * 8;
-        //paramBits += 8;
-        Log.d(LOG_TAG, "Inside decodeMessageId");
-        Log.d(LOG_TAG, "paramBits = " + paramBits);
         if (paramBits >= EXPECTED_PARAM_SIZE) {
             paramBits -= EXPECTED_PARAM_SIZE;
             decodeSuccess = true;
@@ -885,11 +882,11 @@ public final class BearerData {
             bData.hasUserDataHeader = (inStream.read(8) == 1);
             //inStream.skip(3);
         }
-        //if ((! decodeSuccess) || (paramBits > 0)) {
+        if ((! decodeSuccess) || (paramBits > 0)) {
             Log.d(LOG_TAG, "MESSAGE_IDENTIFIER decode " +
                       (decodeSuccess ? "succeeded" : "failed") +
                       " (extra bits = " + paramBits + ")");
-        //}
+        }
         inStream.skip(paramBits);
         return decodeSuccess;
     }
@@ -898,11 +895,8 @@ public final class BearerData {
         throws BitwiseInputStream.AccessException
     {
         int paramBits = inStream.read(8) * 8;
-        Log.d(LOG_TAG, "Inside decodeUserData");
-        Log.d(LOG_TAG, "paramBits = " + paramBits);
         bData.userData = new UserData();
         bData.userData.msgEncoding = inStream.read(5);
-        Log.d(LOG_TAG, "msgEncoding = " + bData.userData.msgEncoding);
         bData.userData.msgEncodingSet = true;
         bData.userData.msgType = 0;
         int consumedBits = 5;
@@ -912,13 +906,9 @@ public final class BearerData {
             consumedBits += 8;
         }
         bData.userData.numFields = inStream.read(8);
-        Log.d(LOG_TAG, "numFields = " + bData.userData.numFields);
         consumedBits += 8;
         int dataBits = paramBits - consumedBits;
-        Log.d(LOG_TAG, "dataBits = " + dataBits + " | paramBits = " + paramBits + " | consumedBits = " + consumedBits);
-        //dataBits -= 8;
         bData.userData.payload = inStream.readByteArray(dataBits);
-        //inStream.skip(8);
         return true;
     }
 
@@ -1309,18 +1299,16 @@ public final class BearerData {
         final int EXPECTED_PARAM_SIZE = 6 * 8;
         boolean decodeSuccess = false;
         int paramBits = inStream.read(8) * 8;
-        Log.d(LOG_TAG, "Inside decodeMsgCenterTimeStamp");
-        Log.d(LOG_TAG, "paramBits = " + paramBits);
         if (paramBits >= EXPECTED_PARAM_SIZE) {
             paramBits -= EXPECTED_PARAM_SIZE;
             decodeSuccess = true;
             bData.msgCenterTimeStamp = TimeStamp.fromByteArray(inStream.readByteArray(6 * 8));
         }
-        //if ((! decodeSuccess) || (paramBits > 0)) {
+        if ((! decodeSuccess) || (paramBits > 0)) {
             Log.d(LOG_TAG, "MESSAGE_CENTER_TIME_STAMP decode " +
                       (decodeSuccess ? "succeeded" : "failed") +
                       " (extra bits = " + paramBits + ")");
-        //}
+        }
         inStream.skip(paramBits);
         return decodeSuccess;
     }
