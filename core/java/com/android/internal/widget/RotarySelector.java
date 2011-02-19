@@ -320,7 +320,7 @@ public class RotarySelector extends View {
                     mArrowMatrix.preRotate(-90, 0, 0);
                     mArrowMatrix.postTranslate(0, height);
                 }
-                canvas.drawBitmap(mArrowLongLeft, mArrowMatrix, mPaint);
+                //canvas.drawBitmap(mArrowLongLeft, mArrowMatrix, mPaint);
                 break;
             case RIGHT_HANDLE_GRABBED:
                 mArrowMatrix.setTranslate(0, 0);
@@ -329,7 +329,7 @@ public class RotarySelector extends View {
                     // since bg width is > height of screen in landscape mode...
                     mArrowMatrix.postTranslate(0, height + (mBackgroundWidth - height));
                 }
-                canvas.drawBitmap(mArrowLongRight, mArrowMatrix, mPaint);
+                //canvas.drawBitmap(mArrowLongRight, mArrowMatrix, mPaint);
                 break;
             default:
                 throw new IllegalStateException("invalid mGrabbedState: " + mGrabbedState);
