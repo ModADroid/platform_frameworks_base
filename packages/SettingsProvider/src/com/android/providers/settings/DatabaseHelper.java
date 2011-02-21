@@ -1026,10 +1026,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     
             loadIntegerSetting(stmt, Settings.System.SCREEN_BRIGHTNESS,
                     R.integer.def_screen_brightness);
+
+            loadIntegerSetting(stmt, Settings.System.DISPLAY_CLOCK,
+                    R.integer.def_display_clock);
     
             loadIntegerSetting(stmt, Settings.System.CLOCK_COLOR,
                     R.integer.def_clock_color);
+
+            loadIntegerSetting(stmt, Settings.System.BATTERY_PERCENTAGE,
+                    R.integer.def_battery_percentage);
     
+            loadIntegerSetting(stmt, Settings.System.BATTERY_COLOR,
+                    R.integer.def_battery_color);
+
+            loadIntegerSetting(stmt, Settings.System.BATTERY_FONT_SIZE,
+                    R.integer.def_battery_font_size);
+
             loadBooleanSetting(stmt, Settings.System.SCREEN_BRIGHTNESS_MODE,
                     R.bool.def_screen_brightness_automatic_mode);
     
