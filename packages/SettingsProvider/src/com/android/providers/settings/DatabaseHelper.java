@@ -1042,6 +1042,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             loadIntegerSetting(stmt, Settings.System.BATTERY_FONT_SIZE,
                     R.integer.def_battery_font_size);
 
+            loadBooleanSetting(stmt, Settings.System.CENTER_BATTERY_PERCENT,
+                    R.bool.def_center_battery_percent);
+
             loadBooleanSetting(stmt, Settings.System.SCREEN_BRIGHTNESS_MODE,
                     R.bool.def_screen_brightness_automatic_mode);
     

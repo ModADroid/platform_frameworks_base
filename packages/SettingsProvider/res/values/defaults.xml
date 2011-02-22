@@ -73,4 +73,9 @@
     <!-- Default for Settings.System.VIBRATE_IN_SILENT -->
     <bool name="def_vibrate_in_silent">true</bool>
     <integer name="def_clock_color">0xff000000</integer>
+    <bool name="def_display_clock">true</bool>
+    <bool name="def_battery_percentage">true</bool>
+    <integer name="def_battery_color">0xffffffff</integer>
+    <integer name="def_battery_font_size">12</integer>
+    <bool name="def_center_battery_percent">false</bool>
 </resources>

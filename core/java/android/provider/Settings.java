@@ -1571,6 +1571,13 @@ public final class Settings {
          */
         public static final String BATTERY_FONT_SIZE = "battery_font_size";
 
+        /*
+         * whether to center the battery percentage indicator
+         * boolean (1 or 0).
+         * @hide
+         */
+        public static final String CENTER_BATTERY_PERCENT = "center_battery_percent";
+
         /**
          * CDMA only settings
          * DTMF tone type played by the dialer when dialing.

@@ -40,6 +40,7 @@ import static android.provider.Settings.System.CLOCK_COLOR;
 import static android.provider.Settings.System.BATTERY_PERCENTAGE;
 import static android.provider.Settings.System.BATTERY_COLOR;
 import static android.provider.Settings.System.BATTERY_FONT_SIZE;
+import static android.provider.Settings.System.CENTER_BATTERY_PERCENT;
 
 class StatusBarIcon {
     // TODO: get this from a resource
@@ -58,6 +59,7 @@ class StatusBarIcon {
     private int mBatteryFontSize = 12;
     private int mBatteryColor = 0xffffffff;
     private int mClockColor = 0xff000000;
+    private boolean mCenterBatteryPercent;
 
     public StatusBarIcon(Context context, IconData data, ViewGroup parent) {
         mData = data.clone();
@@ -133,16 +135,23 @@ class StatusBarIcon {
                 mNumberView = nv;
 
                 // the following is borrowed heavily from cyanogenmod
-                DisplayMetrics dm = new DisplayMetrics();
-		WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
-                wm.getDefaultDisplay().getMetrics(dm);
 
-                mNumberView.setLayoutParams(
-                    new FrameLayout.LayoutParams(
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        FrameLayout.LayoutParams.WRAP_CONTENT,
-                        Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+                mCenterBatteryPercent = (Settings.System.getInt(context.getContentResolver(),
+                    Settings.System.CENTER_BATTERY_PERCENT, 0) == 1);
 
+                if (mCenterBatteryPercent) {
+                    mNumberView.setLayoutParams(
+                        new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            Gravity.CENTER | Gravity.CENTER_VERTICAL));
+                } else {
+                    mNumberView.setLayoutParams(
+                        new FrameLayout.LayoutParams(
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            FrameLayout.LayoutParams.WRAP_CONTENT,
+                            Gravity.RIGHT | Gravity.CENTER_VERTICAL));
+                }
                 mNumberView.setGravity(Gravity.CENTER_HORIZONTAL | Gravity.CENTER_VERTICAL);
 
                 mNumberView.setBackgroundDrawable(null);
