@@ -1084,7 +1084,7 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             if (operatorNumeric == null) {
                 phone.setSystemProperty(TelephonyProperties.PROPERTY_OPERATOR_ISO_COUNTRY, "");
             } else {
-                String isoCountryCode = "US";
+                String isoCountryCode = "us";
                 /*try{
                     isoCountryCode = MccTable.countryCodeForMcc(Integer.parseInt(
                             operatorNumeric.substring(0,3)));
