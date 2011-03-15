@@ -87,6 +87,7 @@ import android.os.ServiceManager;
 import android.os.SystemClock;
 import android.os.SystemProperties;
 import android.os.TokenWatcher;
+import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
@@ -5364,6 +5365,24 @@ public class WindowManagerService extends IWindowManager.Stub
      */
     private int dispatchKey(KeyEvent event, int pid, int uid) {
         if (DEBUG_INPUT) Slog.v(TAG, "Dispatch key: " + event);
+
+        final boolean hapticsDisabled = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 0;
+        if (!hapticsDisabled) {
+            Vibrator mVibrator;
+            mVibrator = new Vibrator();
+
+            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (event.getRepeatCount() == 0)) {
+                //TODO: Check this against a list so that is lighter easily configurable
+                if (event.getKeyCode() == KeyEvent.KEYCODE_MENU
+                    || event.getKeyCode() == KeyEvent.KEYCODE_HOME
+                    || event.getKeyCode() == KeyEvent.KEYCODE_BACK
+                    || event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
+                        if (DEBUG_INPUT) Slog.v(TAG, "##### Homebrew Vibration Action #####");
+                        mVibrator.vibrate(30);
+                }
+            }
+        }
 
         Object focusObj = mKeyWaiter.waitForNextEventTarget(event, null,
                 null, false, false, pid, uid);
