@@ -1578,6 +1578,13 @@ public final class Settings {
          */
         public static final String CENTER_BATTERY_PERCENT = "center_battery_percent";
 
+        /*
+         * whether to use custom haptic feedback for volume keys
+         * boolean (1 or 0).
+         * @hide
+         */
+        public static final String CUSTOM_HAPTIC_FEEDBACK_ENABLED = "custom_haptic_feedback_enabled";
+
         /**
          * CDMA only settings
          * DTMF tone type played by the dialer when dialing.

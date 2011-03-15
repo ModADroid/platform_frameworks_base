@@ -5368,18 +5368,50 @@ public class WindowManagerService extends IWindowManager.Stub
 
         final boolean hapticsDisabled = Settings.System.getInt(mContext.getContentResolver(),
             Settings.System.HAPTIC_FEEDBACK_ENABLED, 0) == 0;
+        final boolean customHapticsDisabled = Settings.System.getInt(mContext.getContentResolver(),
+            Settings.System.CUSTOM_HAPTIC_FEEDBACK_ENABLED, 0) == 0;
+        boolean DoVibrate = false;
+        String mKeyCode = "";
+
         if (!hapticsDisabled) {
             Vibrator mVibrator;
             mVibrator = new Vibrator();
 
             if ((event.getAction() == KeyEvent.ACTION_DOWN) && (event.getRepeatCount() == 0)) {
-                //TODO: Check this against a list so that is lighter easily configurable
-                if (event.getKeyCode() == KeyEvent.KEYCODE_MENU
-                    || event.getKeyCode() == KeyEvent.KEYCODE_HOME
-                    || event.getKeyCode() == KeyEvent.KEYCODE_BACK
-                    || event.getKeyCode() == KeyEvent.KEYCODE_SEARCH) {
-                        if (DEBUG_INPUT) Slog.v(TAG, "##### Homebrew Vibration Action #####");
-                        mVibrator.vibrate(30);
+                switch (event.getKeyCode()) {
+                    case KeyEvent.KEYCODE_MENU:
+                        DoVibrate = true;
+                        mKeyCode = "MENU";
+                        break;
+                    case KeyEvent.KEYCODE_HOME:
+                        DoVibrate = true;
+                        mKeyCode = "HOME";
+                        break;
+                    case KeyEvent.KEYCODE_BACK:
+                        DoVibrate = true;
+                        mKeyCode = "BACK";
+                        break;
+                    case KeyEvent.KEYCODE_SEARCH:
+                        DoVibrate = true;
+                        mKeyCode = "SEARCH";
+                        break;
+                    case KeyEvent.KEYCODE_VOLUME_UP:
+                        if (!customHapticsDisabled) {
+                            DoVibrate = true;
+                            mKeyCode = "VOLUME_UP";
+                        }
+                        break;
+                    case KeyEvent.KEYCODE_VOLUME_DOWN:
+                        if (!customHapticsDisabled) {
+                            DoVibrate = true;
+                            mKeyCode = "VOLUME_DOWN";
+                        }
+                        break;
+                }
+                if (DoVibrate) {
+                    if (DEBUG_INPUT) Slog.v(TAG, "##### Homebrew Vibration Action : " + mKeyCode + "#####");
+                    //TODO: make this value configurable
+                    mVibrator.vibrate(30);
                 }
             }
         }
