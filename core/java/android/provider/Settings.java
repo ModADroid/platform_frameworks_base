@@ -1585,6 +1585,12 @@ public final class Settings {
          */
         public static final String CUSTOM_HAPTIC_FEEDBACK_ENABLED = "custom_haptic_feedback_enabled";
 
+        /*
+         * haptic feedback vibration value
+         * @hide
+         */
+        public static final String HAPTIC_FEEDBACK_VIBRATION_VALUE = "haptic_feedback_vibration_value";
+
         /**
          * CDMA only settings
          * DTMF tone type played by the dialer when dialing.

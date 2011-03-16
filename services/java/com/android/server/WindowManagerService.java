@@ -5410,8 +5410,11 @@ public class WindowManagerService extends IWindowManager.Stub
                 }
                 if (DoVibrate) {
                     if (DEBUG_INPUT) Slog.v(TAG, "##### Homebrew Vibration Action : " + mKeyCode + "#####");
-                    //TODO: make this value configurable
-                    mVibrator.vibrate(30);
+                    mVibrator.vibrate(
+                            Settings.System.getInt(
+                                mContext.getContentResolver(),
+                                Settings.System.HAPTIC_FEEDBACK_VIBRATION_VALUE, 30)
+                    );
                 }
             }
         }
