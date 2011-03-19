@@ -1591,6 +1591,12 @@ public final class Settings {
          */
         public static final String HAPTIC_FEEDBACK_VIBRATION_VALUE = "haptic_feedback_vibration_value";
 
+        /*
+         * whether to launcher googlevoice app with voicemail shortcuts
+         * @hide
+         */
+        public static final String VM_USES_GOOGLEVOICE = "vm_uses_googlevoice";
+
         /**
          * CDMA only settings
          * DTMF tone type played by the dialer when dialing.
