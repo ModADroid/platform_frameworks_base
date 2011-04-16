@@ -25,7 +25,6 @@ import android.telephony.PhoneNumberUtils;
  */
 public class DriverCall implements Comparable {
     static final String LOG_TAG = "RILB";
-    static final String NO_VIDEO = "no_video";
 
     public enum State {
         ACTIVE,
@@ -108,15 +107,15 @@ public class DriverCall implements Comparable {
                 + "toa=" + TOA + ","
                 + (isMpty ? "conf" : "norm") + ","
                 + (isMT ? "mt" : "mo") + ","
-                + als + ","
-                + NO_VIDEO + ","
+                + "als=" + als + ","
                 + (isVoice ? "voc" : "nonvoc") + ","
-                + (isVoicePrivacy ? "evp" : "noevp") + ","
-                + "number=" + number + ","
+                + "nonvid" + ","
+                + number + ","
                 + "cli=" + numberPresentation + ","
                 + "name=" + name + ","
                 + namePresentation;
     }
+//                + (isVoicePrivacy ? "evp" : "noevp") + ","
 
     public static State
     stateFromCLCC(int state) throws ATParseEx {
@@ -135,13 +134,16 @@ public class DriverCall implements Comparable {
     public static int
     presentationFromCLIP(int cli) throws ATParseEx
     {
+        Log.d(LOG_TAG, "cli = " + cli);
         switch(cli) {
             case 0: return Connection.PRESENTATION_ALLOWED;
             case 1: return Connection.PRESENTATION_RESTRICTED;
             case 2: return Connection.PRESENTATION_UNKNOWN;
             case 3: return Connection.PRESENTATION_PAYPHONE;
             default:
-                throw new ATParseEx("illegal presentation " + cli);
+                //throw new ATParseEx("illegal presentation " + cli);
+                Log.d(LOG_TAG, "illegal presentation = " + cli);
+                return Connection.PRESENTATION_ALLOWED;
         }
     }
 

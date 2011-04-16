@@ -141,6 +141,7 @@ class RILRequest {
                 this.mNext = sPool;
                 sPool = this;
                 sPoolSize++;
+                mResult = null;
             }
         }
     }
@@ -2221,26 +2222,9 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         }
 
         if (error != 0) {
-            if(!(error == -1 && rr.mRequest == RIL_REQUEST_SEND_SMS)) //ugly fix for Samsung messing up SMS_SEND request fail in binary RIL
-            {
-                rr.onError(error, ret);
-                rr.release();
-                return;
-            }
-            else
-            {
-                try 
-                {
-                    ret =  responseSMS(p);
-                } catch (Throwable tr) {
-                    Log.w(LOG_TAG, rr.serialString() + "< "
-                    + requestToString(rr.mRequest)
-                    + " exception, Processing Samsung SMS fix ", tr);
-                    rr.onError(error, ret);
-                    rr.release();
-                    return;
-                }
-            }
+            rr.onError(error, ret);
+            rr.release();
+            return;
         }
 
         if (RILJ_LOGD) riljLog(rr.serialString() + "< " + requestToString(rr.mRequest)
@@ -2359,11 +2343,9 @@ public final class RIL extends BaseCommands implements CommandsInterface {
             case RIL_UNSOL_OEM_HOOK_RAW: ret = responseRaw(p); break;
             case RIL_UNSOL_RINGBACK_TONE: ret = responseInts(p); break;
             case RIL_UNSOL_RESEND_INCALL_MUTE: ret = responseVoid(p); break;
-            case RIL_UNSOL_HSDPA_STATE_CHANGED: ret = responseVoid(p); break;
-            
+
             //fixing anoying Exceptions caused by the new Samsung states
             //FIXME figure out what the states mean an what data is in the parcel
-
             case RIL_UNSOL_O2_HOME_ZONE_INFO: ret = responseVoid(p); break;
             case RIL_UNSOL_SAMSUNG_UNKNOWN_MAGIC_REQUEST: ret = responseVoid(p); break;
             case RIL_UNSOL_STK_SEND_SMS_RESULT: ret = responseVoid(p); break;
@@ -2856,44 +2838,6 @@ public final class RIL extends BaseCommands implements CommandsInterface {
         ArrayList<DriverCall> response;
         DriverCall dc;
 
-  int dataAvail = p.dataAvail();
-  int pos = p.dataPosition();
-  int size = p.dataSize();
-  Log.d(LOG_TAG, "Parcel size = " + size);
-  Log.d(LOG_TAG, "Parcel pos = " + pos);
-  Log.d(LOG_TAG, "Parcel dataAvail = " + dataAvail);
-/*
-//Samsung fucked up here
-// Native package assembly in the aosp rild
-
-p.writeInt32(p_cur->state);
-        p.writeInt32(p_cur->index);
-        p.writeInt32(p_cur->toa);
-        p.writeInt32(p_cur->isMpty);
-        p.writeInt32(p_cur->isMT);
-        p.writeInt32(p_cur->als);
-        p.writeInt32(p_cur->isVoice);
-        p.writeInt32(p_cur->isVoicePrivacy);
-        writeStringToParcel(p, p_cur->number);
-        p.writeInt32(p_cur->numberPresentation);
-        writeStringToParcel(p, p_cur->name);
-        p.writeInt32(p_cur->namePresentation);
-*/
-
-/*
-        Remove when partners upgrade to version 3
-        if ((s_callbacks.version < 3) || (p_cur->uusInfo == NULL || p_cur->uusInfo->uusData == NULL)) {
-            p.writeInt32(0);  UUS Information is absent 
-        } else {
-            RIL_UUS_Info *uusInfo = p_cur->uusInfo;
-            p.writeInt32(1);  UUS Information is present 
-            p.writeInt32(uusInfo->uusType);
-            p.writeInt3s2(uusInfo->uusDcs);
-            p.writeInt32(uusInfo->uusLength);
-            p.write(uusInfo->uusData, uusInfo->uusLength);
-        }
-*/
-
         num = p.readInt();
         response = new ArrayList<DriverCall>(num);
 
@@ -2901,20 +2845,43 @@ p.writeInt32(p_cur->state);
             dc = new DriverCall();
 
             dc.state = DriverCall.stateFromCLCC(p.readInt());
+            Log.d(LOG_TAG, "state = " + dc.state);
             dc.index = p.readInt();
+            Log.d(LOG_TAG, "index = " + dc.index);
             dc.TOA = p.readInt();
+            Log.d(LOG_TAG, "toa = " + dc.TOA);
             dc.isMpty = (0 != p.readInt());
+            Log.d(LOG_TAG, "isMpty = " + dc.isMpty);
             dc.isMT = (0 != p.readInt());
+            Log.d(LOG_TAG, "isMT = " + dc.isMT);
             dc.als = p.readInt();
+            Log.d(LOG_TAG, "als = " + dc.als);
+
             voiceSettings = p.readInt();
+            Log.d(LOG_TAG, "voiceSettings = " + voiceSettings);
             dc.isVoice = (0 == voiceSettings) ? false : true;
+            Log.d(LOG_TAG, "dc.isVoice = " + dc.isVoice);
+
             dc.isVoicePrivacy = (0 != p.readInt());
+            Log.d(LOG_TAG, "isVoicePrivacy = " + dc.isVoicePrivacy);
+
             voiceSettings = p.readInt(); //Some Samsung magic data for Videocalls
+            Log.d(LOG_TAG, "voiceSettingsSammy = " + voiceSettings);
+
             dc.number = p.readString();
+            Log.d(LOG_TAG, "number = " + dc.number);
+
             int np = p.readInt();
+            Log.d(LOG_TAG, "np = " + np);
             dc.numberPresentation = DriverCall.presentationFromCLIP(np);
+            Log.d(LOG_TAG, "numberPresentation = " + dc.numberPresentation);
+
             dc.name = p.readString();
+            Log.d(LOG_TAG, "name = " + dc.name);
+
             dc.namePresentation = p.readInt();
+            Log.d(LOG_TAG, "namePresentation = " + dc.namePresentation);
+/*
             int uusInfoPresent = p.readInt();
             if (uusInfoPresent == 1) {
                 // TODO: Copy the data to dc to forward to the apps.
@@ -2922,7 +2889,7 @@ p.writeInt32(p_cur->state);
                 p.readInt();
                 p.createByteArray();
             }
-
+*/
             // Make sure there's a leading + on addresses with a TOA of 145
             dc.number = PhoneNumberUtils.stringFromStringAndTOA(dc.number, dc.TOA);
 
