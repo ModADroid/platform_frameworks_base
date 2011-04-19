@@ -131,7 +131,25 @@ public class PhoneFactory {
      * @return Phone Type
      */
     public static int getPhoneType(int networkMode) {
-        return Phone.PHONE_TYPE_CDMA;
+        switch(networkMode) {
+        case RILConstants.NETWORK_MODE_CDMA:
+        case RILConstants.NETWORK_MODE_CDMA_NO_EVDO:
+        case RILConstants.NETWORK_MODE_EVDO_NO_CDMA:
+            return Phone.PHONE_TYPE_CDMA;
+
+        case RILConstants.NETWORK_MODE_WCDMA_PREF:
+        case RILConstants.NETWORK_MODE_GSM_ONLY:
+        case RILConstants.NETWORK_MODE_WCDMA_ONLY:
+        case RILConstants.NETWORK_MODE_GSM_UMTS:
+            return Phone.PHONE_TYPE_GSM;
+
+        case RILConstants.NETWORK_MODE_GLOBAL:
+            return Phone.PHONE_TYPE_CDMA;
+        default:
+            return Phone.PHONE_TYPE_GSM;
+        }
+
+
     }
 
     public static Phone getDefaultPhone() {

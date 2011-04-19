@@ -880,7 +880,6 @@ public final class BearerData {
             bData.messageId = inStream.read(8) << 8;
             bData.messageId |= inStream.read(8);
             bData.hasUserDataHeader = (inStream.read(8) == 1);
-            //inStream.skip(3);
         }
         if ((! decodeSuccess) || (paramBits > 0)) {
             Log.d(LOG_TAG, "MESSAGE_IDENTIFIER decode " +
@@ -1540,10 +1539,8 @@ public final class BearerData {
             BearerData bData = new BearerData();
             int foundSubparamMask = 0;
             while (inStream.available() > 0) {
-                Log.d(LOG_TAG, "inStream.available = " + inStream.available());
                 boolean decodeSuccess = false;
                 int subparamId = inStream.read(8);
-                Log.d(LOG_TAG, "subparamId = " + subparamId);
                 int subparamIdBit = 1 << subparamId;
                 if ((foundSubparamMask & subparamIdBit) != 0) {
                     throw new CodingException("illegal duplicate subparameter (" +

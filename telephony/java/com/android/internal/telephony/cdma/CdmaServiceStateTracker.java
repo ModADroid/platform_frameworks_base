@@ -703,22 +703,22 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
                             baseStationLongitude = CdmaCellLocation.INVALID_LAT_LONG;
                         }
                         if (states[7] != null) {
-                            cssIndicator = Integer.parseInt(states[7], 16);
+                            cssIndicator = Integer.parseInt(states[7]);
                         }
                         if (states[8] != null) {
-                            systemId = Integer.parseInt(states[8], 16);
+                            systemId = Integer.parseInt(states[8]);
                         }
                         if (states[9] != null) {
-                            networkId = Integer.parseInt(states[9], 16);
+                            networkId = Integer.parseInt(states[9]);
                         }
                         if (states[10] != null) {
-                            roamingIndicator = Integer.parseInt(states[10], 16);
+                            roamingIndicator = Integer.parseInt(states[10]);
                         }
                         if (states[11] != null) {
-                            systemIsInPrl = Integer.parseInt(states[11], 16);
+                            systemIsInPrl = Integer.parseInt(states[11]);
                         }
                         if (states[12] != null) {
-                            defaultRoamingIndicator = Integer.parseInt(states[12], 16);
+                            defaultRoamingIndicator = Integer.parseInt(states[12]);
                         }
                         if (states[13] != null) {
                             reasonForDenial = Integer.parseInt(states[13]);
@@ -1084,15 +1084,7 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             if (operatorNumeric == null) {
                 phone.setSystemProperty(TelephonyProperties.PROPERTY_OPERATOR_ISO_COUNTRY, "");
             } else {
-                String isoCountryCode = "";
-                try{
-                    isoCountryCode = MccTable.countryCodeForMcc(Integer.parseInt(
-                            operatorNumeric.substring(0,3)));
-                } catch ( NumberFormatException ex){
-                    Log.w(LOG_TAG, "countryCodeForMcc error" + ex);
-                } catch ( StringIndexOutOfBoundsException ex) {
-                    Log.w(LOG_TAG, "countryCodeForMcc error" + ex);
-                }
+                String isoCountryCode = "us";
 
                 phone.setSystemProperty(TelephonyProperties.PROPERTY_OPERATOR_ISO_COUNTRY,
                         isoCountryCode);
@@ -1205,11 +1197,10 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             int[] ints = (int[])ar.result;
             int offset = 0;
             int cdmaDbm = (ints[offset] > 0) ? -ints[offset] : -120;
+
             int cdmaEcio = (ints[offset+2] > 0) ? -ints[offset+2] : -160;
-            //int evdoRssi = (ints[offset+3] > 0) ? -ints[offset+3] : -120;
             int evdoRssi = cdmaDbm;
             int evdoEcio = (ints[offset+4] > 0) ? -ints[offset+4] : -1;
-            //int evdoSnr  = ((ints[offset+4] > 0) && (ints[offset+4] <= 8)) ? ints[offset+4] : -1;
             int evdoSnr = cdmaDbm/15;
             if(evdoSnr < 0)
                 evdoSnr = -evdoSnr;
