@@ -1195,16 +1195,40 @@ final class CdmaServiceStateTracker extends ServiceStateTracker {
             setSignalStrengthDefaultValues();
         } else {
             int[] ints = (int[])ar.result;
-            int offset = 0;
-            int cdmaDbm = (ints[offset] > 0) ? -ints[offset] : -120;
-
-            int cdmaEcio = (ints[offset+2] > 0) ? -ints[offset+2] : -160;
-            int evdoRssi = cdmaDbm;
-            int evdoEcio = (ints[offset+4] > 0) ? -ints[offset+4] : -1;
-            int evdoSnr = cdmaDbm/15;
-            if(evdoSnr < 0)
-                evdoSnr = -evdoSnr;
-
+            /*
+             * Fascinate
+             * 
+             * What I derived through my own testing:
+             * ints[0] = cdmaDbm, hopefully
+             * ints[1] = almost always 0, but I got 1 once; cdmaEcio not reported?
+             * ints[2] = ints[4] = evdoRssi
+             * ints[3] = ints[5] = evdoEcio (actual Ec/Io * 10)?
+             *     sometimes negative (even when evdo is present sometimes)
+             *     ends in 6 when negative, ends in 0 when positive
+             * ints[6] = mostly 1074827264, sometimes 62500 = wtf????
+             * 
+             * What Samsung/Verizon did:
+             * If you use the app "CDMA Field Test Application" on a TouchWiz ROM,
+             *     then you will find out that they use the same values for cdma & evdo (genius!),
+             *     so the stock offset of 2 is "right", and evdoSnr is not reported (use bogus number)
+             * Either Verizon's CDMA really sucks or Samsung doesn't know how to make their radio work right...
+             * Despite reporting these values, the TouchWiz ROM chooses signal bars image based on
+             *     what is shown in Settings -> About phone -> Status -> Signal strength, which is ints[0],
+             *     but NOT set to cdmaDbm here... (weird)
+             */
+            
+            // TELL ME THE VALUES DAMNIT
+            //Log.i("CdmaServiceStateTracker: ar.result as int[]",
+            //    ints[0] + " " + ints[1] + " " + ints[2] + " " + ints[3] + " " + ints[4] + " " + ints[5] + " " + ints[6]);
+            
+            int offset = 2;
+            //int cdmaDbm = (ints[offset] > 0) ? -ints[offset] : -120;
+            int cdmaDbm = (ints[0] > 0 ) ? -ints[0] : -120;
+            int cdmaEcio = (ints[offset+1] > 0) ? -ints[offset+1] : -160;
+            int evdoRssi = (ints[offset+2] > 0) ? -ints[offset+2] : -120;
+            int evdoEcio = (ints[offset+3] > 0) ? -ints[offset+3] : -1;
+            int evdoSnr  = ((ints[offset+4] > 0) && (ints[offset+4] <= 8)) ? ints[offset+4] : -1;
+            
             //log(String.format("onSignalStrengthResult cdmaDbm=%d cdmaEcio=%d evdoRssi=%d evdoEcio=%d evdoSnr=%d",
             //        cdmaDbm, cdmaEcio, evdoRssi, evdoEcio, evdoSnr));
             mSignalStrength = new SignalStrength(99, -1, cdmaDbm, cdmaEcio,
